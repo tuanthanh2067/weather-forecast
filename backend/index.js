@@ -1,28 +1,19 @@
 const express = require("express");
+const cors = require("cors");
 const { graphqlHTTP } = require("express-graphql");
-const { buildSchema } = require("graphql");
+const schema = require("./schema");
 
 const app = express();
 
-const schema = buildSchema(`
-    type Query {
-        hello: String
-    }
-`);
-
-let root = {
-  hello: () => {
-    return "Hello World!";
-  },
-};
-
+app.use(cors());
 app.use(
   "/graphql",
   graphqlHTTP({
     schema: schema,
-    rootValue: root,
     graphiql: true,
   })
 );
 
-app.listen(4000);
+const PORT = process.env.PORT || 4000;
+
+app.listen(PORT, () => console.log(`Server started on ${PORT}`));
